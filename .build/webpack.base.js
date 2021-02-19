@@ -8,7 +8,7 @@ const basePath = path.resolve(__dirname, "../");
 const config = {
     mode: process.env.NODE_ENV,
     entry: {
-        'switchery': basePath + '/src/index.js',
+        'switchery': basePath + '/src/switchery.js',
         'example': basePath + '/example/example.js'
     },
     output: {

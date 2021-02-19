@@ -1,5 +1,5 @@
 
-import Switchery from "../src/switchery2";
+import Switchery from "../src/switchery.js";
 
 let switches = {};
 let switchConfig = {
@@ -14,10 +14,6 @@ let switchConfig = {
         size: 'large'
     },
     'demo-checked-1': {
-        checked: false
-    },
-    'demo-checked-2': {
-        checked: true
     },
     'demo-text-1' :{
         showText: true,

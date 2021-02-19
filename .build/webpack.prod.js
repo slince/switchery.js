@@ -6,7 +6,7 @@ const config = require('./webpack.base');
 module.exports = merge(config, {
     mode: 'production',
     output: {
-        publicPath: "/",
+        publicPath: "./",
         library: 'Switchery',
         libraryTarget: 'umd',
     },

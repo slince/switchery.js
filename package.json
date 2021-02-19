@@ -49,8 +49,5 @@
     "webpack-manifest-plugin": "^3.0.0",
     "webpack-merge": "^5.7.3",
     "webpack-nano": "^1.1.1"
-  },
-  "dependencies": {
-    "fastclick": "^1.0.6"
   }
 }

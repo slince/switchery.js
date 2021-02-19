@@ -50,11 +50,18 @@
             font-size: 18px;
             color: #22b6d5;
         }
+        .hljs{
+            background-color: #fdf6e3 !important;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+            margin: 20px 0 20px 3px;
+            overflow: auto;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/a11y-light.min.css" crossorigin="anonymous" />
 </head>
 <body>
 <div class="demo-content">
-    <a class="github-link" href="https://github.com/zhiyul/Switchery">View on GitHub</a>
+    <a class="github-link" href="https://github.com/slince/switchery.js">View on GitHub</a>
     <div class="demo-box">
         <h4 class="demo-box-title">default</h4>
         <div class="demo-box-content">
@@ -84,14 +91,14 @@
     <div class="demo-box">
         <h4 class="demo-box-title">checked</h4>
         <div class="demo-box-content">
-            <pre>
+           <pre>
                 <code>
-                    var mySwitchery1 = new Switchery(el, {checked: false});
-                    var mySwitchery2 = new Switchery(el, {checked: true});
+                    &lt;input type="checkbox" class="switch-primary" checked="checked"/&gt;
+
+                    var mySwitchery1 = new Switchery(el);
                 </code>
             </pre>
-            <input type="checkbox" class="demo-checked-1" />
-            <input type="checkbox" class="demo-checked-2" />
+            <input type="checkbox" class="demo-checked-1" checked="checked"/>
         </div>
     </div>
     <div class="demo-box">
@@ -128,16 +135,16 @@
         <h4 class="demo-box-title">Predefined Classes</h4>
         <div class="demo-box-content">
             <pre>
-            <code>
-                &lt;input type="checkbox" class="switch-primary" /&gt;<br>
-                &lt;input type="checkbox" class="switch-success" /&gt;<br>
-                &lt;input type="checkbox" class="switch-danger" /&gt;<br>
-                &lt;input type="checkbox" class="switch-black" /&gt;<br>
-                &lt;input type="checkbox" class="switch-warning" /&gt;<br>
-                &lt;input type="checkbox" class="switch-info" /&gt;<br>
-                &lt;input type="checkbox" class="switch-transparent" /&gt;<br>
-            </code>
-        </pre>
+                <code>
+                    &lt;input type="checkbox" class="switch-primary" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-success" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-danger" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-black" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-warning" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-info" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-transparent" /&gt;<br>
+                </code>
+            </pre>
             <input type="checkbox" class="switch-primary" />
              <input type="checkbox" class="switch-success" />
              <input type="checkbox" class="switch-danger" />

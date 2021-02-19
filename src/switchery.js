@@ -1,301 +1,318 @@
-import fastclick from 'fastclick';
+require('./switchery.scss');
 
-let legalSize = ['default','large','small'];
+/**
+ * Blank callback
+ */
+function noop() {
+}
 
-let switchEventsHandles = {
-    changeSwitchStateFromCheckbox(){
-        this._switch._toggle(this.checked);
-    },
-    changeSwitchStateFromSwitch(){
-        if(this._instance._options.disabled)return;
-        this._instance._toggle();
-    },
-    changeSwitchStateFromKeyboard(e){
-        var key = e.which || e.keyCode || 0;
-        if(this._instance._options.disabled)return;
-        if(key === 13){
-            this._instance._toggle();
+class Switchery{
+
+    constructor(element, options) {
+        options = options || {};
+        this.defaults = {
+            size: 'default',
+            onText: 'Y',
+            offText: 'N',
+            color: '#64BD63',
+            secondaryColor: '#dfdfdf',
+            jackColor: '#fff',
+            jackSecondaryColor: null,
+            disabled: false,
+            disabledOpacity   : 0.5,
+            speed: '0.4s',
+            className: 'switchery',
+            onInit: noop,
+            beforeChange: noop,
+            onChange: noop,
+        };
+        this.element = element;
+        this.options = Object.assign({}, this.defaults, options);
+        if (this.element.type !== 'checkbox') {
+            console.warn('[Switchery] The element is not a checkbox element');
+            return;
+        }
+        this.init();
+    }
+
+    /**
+     * Initialize switch
+     * @private
+     */
+    init(){
+        this.hide();
+        this.show();
+        this.correct();
+        this.setPosition();
+        this.handleChange();
+        this.handleClick();
+        this.options.onInit(this);
+    }
+
+    /**
+     * Hide the checkbox element
+     * @private
+     */
+    hide(){
+        this.element.style.display = 'none';
+    }
+
+    /**
+     * Show the switch after checkbox
+     * @private
+     */
+    show(){
+        let switcher = this.create();
+        this.element.parentNode.insertBefore(switcher, this.element.nextSibling);
+    }
+
+    /**
+     * Create switch element
+     * @private
+     * @returns {HTMLSpanElement}
+     */
+    create(){
+        this.switcher = document.createElement('span');
+        this.jack = document.createElement('small');
+        this.switcher.appendChild(this.jack);
+        this.switcher.className = this.options.className + ' ' + `switchery-${this.options.size}`;
+        return this.switcher;
+    }
+
+    /**
+     * Correct the switch element attributes
+     * @private
+     */
+    correct(){
+        this.switcher.setAttribute('tabindex', 0);
+        this.switcher.setAttribute('role', 'checkbox');
+        this.switcher.setAttribute('aria-checked', this.element.checked);
+        this.switcher.setAttribute('aria-disabled', this.options.disabled);
+    }
+
+    /**
+     * Set switch jack proper position.
+     * @private
+     */
+    setPosition(){
+        let checked = this.isChecked();
+        let switcher = this.switcher;
+        let jack = this.jack;
+
+        if (checked === true) {
+            if (window.getComputedStyle) {
+                jack.style.left = parseInt(window.getComputedStyle(switcher).width) - jack.offsetWidth + 'px';
+            } else {
+                jack.style.left = parseInt(switcher.currentStyle['width']) - jack.offsetWidth + 'px';
+            }
+            if (this.options.color) {
+                this.colorize();
+            }
+            this.setSpeed();
+        } else {
+            jack.style.left = '0';
+            switcher.style.boxShadow = 'inset 0 0 0 0 ' + this.options.secondaryColor;
+            switcher.style.borderColor = this.options.secondaryColor;
+            switcher.style.backgroundColor = (this.options.secondaryColor !== this.defaults.secondaryColor) ? this.options.secondaryColor : '#fff';
+            jack.style.backgroundColor = (this.options.jackSecondaryColor !== this.options.jackColor) ? this.options.jackSecondaryColor : this.options.jackColor;
+            this.setSpeed();
         }
     }
-};
 
-const SWITCH_BORDER_COLOR = '#dfdfdf';
-const SWITCH_ON_CLASS = 'switch-on';
-const SWITCH_OFF_CLASS = 'switch-off';
+    /**
+     * Set switch color.
+     *
+     * @api private
+     */
+    colorize(){
+        const switcherHeight = this.switcher.offsetHeight / 2;
+        this.switcher.style.backgroundColor = this.options.color;
+        this.switcher.style.borderColor = this.options.color;
+        this.switcher.style.boxShadow = 'inset 0 0 0 ' + switcherHeight + 'px ' + this.options.color;
+        this.jack.style.backgroundColor = this.options.jackColor;
+    }
 
-function Switchery (el, options) {
-    this._init(el, options)
-}
+    /**
+     * Set speed.
+     *
+     * @private
+     */
+    setSpeed(){
+        let switcherProp;
+        const jackProp = {
+            'background-color': this.options.speed,
+            'left': this.options.speed.replace(/[a-z]/, '') / 2 + 's'
+        };
 
-/************************* private methods *************************/
+        if (this.isChecked()) {
+            switcherProp = {
+                'border': this.options.speed,
+                'box-shadow': this.options.speed,
+                'background-color': this.options.speed.replace(/[a-z]/, '') * 3 + 's'
+            };
+        } else {
+            switcherProp = {
+                'border': this.options.speed,
+                'box-shadow': this.options.speed
+            };
+        }
 
-/** switch init
- *
- * @param el
- * @param options
- * @returns {Switchery}
- * @private
- */
-Switchery.prototype._init = function (el, options) {
-
-    let defaultOptions = {
-        size: 'default',
-        checked: undefined,
-        onText: 'Y',
-        offText: 'N',
-        onSwitchColor: '#64BD63',
-        offSwitchColor: '#fff',
-        onJackColor: '#fff',
-        offJackColor: '#fff',
-        showText: false,
-        disabled: false,
-        onInit: noop,
-        beforeChange: noop,
-        onChange: noop,
-        beforeRemove: noop,
-        onRemove: noop,
-        beforeDestroy: noop,
-        onDestroy: noop
+        this.applyTransition(this.switcher, switcherProp);
+        this.applyTransition(this.jack, jackProp);
     };
-    
-    if(!el || el.nodeType !== 1 || el.type !== 'checkbox') return;
-    if(el._switch)return el._switch;
-    if(!this instanceof Switchery) return new Switchery(el, options);
 
-    this._el = el;
-    this._el._switch = this;
-    this._options = mergeOptions(defaultOptions, options);
-    this._initElement();
-
-    this._initEvents();
-
-    this._options.onInit.call(this);
-};
-
-/**use switch instead of checkbox
- *
- * @private
- */
-Switchery.prototype._initElement = function () {
-    this._el.style.display = 'none';
-
-    if(this._options.checked !== undefined){
-        this._el.checked = Boolean(this._options.checked);
-    }else {
-        this._options.checked = this._el.checked;
+    applyTransition(element, props){
+        const transitions = [];
+        for (let key in props) {
+            transitions.push(key + ' ' + props[key]);
+        }
+        element.style.transition = transitions.join(', ');
     }
 
-    let newSwitch = this._createSwitch();
-    initSwitchAttr(newSwitch, this._options);
-    insertSwitch(newSwitch, this._el);
-    initSwitchStyle(newSwitch, this._options, this);
-    fastclick.attach(newSwitch);
-};
-/**
- * make switch DOM
- *
- * @private
- */
-Switchery.prototype._createSwitch = function (){
-    this._switch = document.createElement('span');
-    this._jack = document.createElement('small');
-    this._switch.appendChild(this._jack);
-    this._switch._instance = this;
-    return this._switch;
-};
+    /**
+     * Handle the native input element state change.
+     * A `change` event must be fired in order to detect the change.
+     *
+     * @private
+     */
+    handleChange() {
+        const _this = this;
+        const element = this.element;
+        const handler = function () {
+            const checked = element.checked;
+            _this.toggle(checked);
+        };
+        if (element.addEventListener) {
+            element.addEventListener('change', handler);
+        } else {
+            element.attachEvent('onchange', handler);
+        }
+    };
 
-
-Switchery.prototype._initEvents = function () {
-    this._events =  new Map([
-        ['change changeSwitchStateFromCheckbox', this._el],
-        ['click changeSwitchStateFromSwitch', this._switch],
-        ['keypress changeSwitchStateFromKeyboard',this._switch]
-    ]);
-    bindEvents(this._events,this);
-};
-
-/**toggle switch and the checkbox.
- *
- * @param checked
- * @private
- */
-Switchery.prototype._toggle = function (checked) {
-    this._options.beforeChange.call(this, this._el.checked);
-    this._el.checked = checked === undefined ? !this._el.checked : checked;
-    this._options.onChange.call(this, this._el.checked);
-    let addClass = this._el.checked ? SWITCH_ON_CLASS : SWITCH_OFF_CLASS;
-    let removeClass = this._el.checked ? SWITCH_OFF_CLASS : SWITCH_ON_CLASS;
-    this._switch.setAttribute('aria-checked', this._el.checked);
-    classList(this._switch)
-        .add(addClass)
-        .remove(removeClass);
-    setJackPosition.call(this);
-    setJackText.call(this);
-    setSwitchColor.call(this);
-};
-
-/************************* public methods *************************/
-
-/**return checkbox status
- *
- * @public
- */
-Switchery.prototype.getChecked = function () {
-    return this._el.checked;
-};
-
-/**set switch ON
- *
- * @public
- */
-Switchery.prototype.on = function () {
-    this._toggle(true);
-};
-
-/**set switch OFF
- *
- * @public
- */
-Switchery.prototype.off = function () {
-    this._toggle(false);
-};
-
-/**toggle switch
- *
- * @public
- */
-Switchery.prototype.toggle = function () {
-    this._toggle();
-};
-
-/**disable switch
- *
- *@public
- */
-Switchery.prototype.disable = function () {
-    setSwitchDisabled.call(this, this._options.disabled = true);
-};
-
-/**enable switch
- *
- *@public
- */
-Switchery.prototype.enable = function () {
-    setSwitchDisabled.call(this, this._options.disabled = false);
-};
-
-/**
- * remove all events bind to switch
- *
- * @public
- */
-Switchery.prototype.destroy = function () {
-    this._options.beforeDestroy.call(this, this._el.checked);
-    unbindEvents(this._events,this);
-    this._options.onDestroy.call(this);
-};
-
-/**
- * remove switch form DOM and show the checkbox
- *
- * @public
- */
-Switchery.prototype.remove = function () {
-    this._options.beforeRemove.call(this, this._el.checked);
-    try {
-        this._el.setAttribute('style',this._el.getAttribute('style').replace(/\s*display:\s*none;/g,''));
-    }catch (e){}
-    if(this._switch.parentNode){
-        this._switch.parentNode.removeChild(this._switch);
-        this._options.onRemove.call(this);
+    /**
+     *  Handle the click event.
+     *  @private
+     */
+    handleClick() {
+        const _this = this;
+        const switcher = this.switcher;
+        const handler = function () {
+            if (_this.isDisabled()) {
+                return false;
+            }
+            _this.toggle();
+        };
+        if (switcher.addEventListener) {
+            switcher.addEventListener('click', handler);
+        } else {
+            switcher.attachEvent('onclick', handler);
+        }
     }
-};
 
+    /**
+     * See if input is checked.
+     *
+     * @returns {Boolean}
+     * @public
+     */
+    isChecked(){
+        return this.element.checked;
+    }
 
-function noop() {}
+    /**
+     * Alias for isChecked
+     *
+     * @returns {Boolean}
+     * @public
+     * @deprecated
+     */
+    getChecked(){
+        return this.isChecked();
+    }
 
-function initSwitchStyle(swEl, options, sw) {
-    classList(swEl).
-    add(
-        'switch',
-        'switch-' + (legalSize.includes(options.size) ? options.size : 'default'),
-        options.checked ? SWITCH_ON_CLASS : SWITCH_OFF_CLASS
-    );
-    setJackText.call(sw);
-    setSwitchColor.call(sw);
-    setJackPosition.call(sw);
-    setSwitchDisabled.call(sw, sw._options.disabled);
-}
+    /**
+     * Toggle switch and the checkbox.
+     * @public
+     */
+    toggle(checked){
+        this.options.beforeChange(this, this.element.checked);
+        this.element.checked = checked === undefined ? !this.element.checked : checked;
+        this.options.onChange(this, this.element.checked);
+        const classList = this.switcher.classList;
+        if (this.element.checked) {
+            classList.add('switchery-on');
+            classList.remove('switchery-off');
+        } else {
+            classList.remove('switchery-on');
+            classList.add('switchery-off');
+        }
+        this.switcher.setAttribute('aria-checked', this.element.checked);
+        this.setPosition();
+    }
 
-function initSwitchAttr(swEl, options) {
-    swEl.setAttribute('tabindex', 0);
-    swEl.setAttribute('role', 'checkbox');
-    swEl.setAttribute('aria-checked', options.checked);
-    swEl.setAttribute('aria-disabled', options.disabled);
-}
+    /**
+     * Set switch ON
+     * @public
+     */
+    on(){
+        this.toggle(true);
+    }
 
-function insertSwitch(source, target) {
-    target.parentNode.insertBefore(source, target.nextSibling);
-}
+    /**
+     * Set switch OFF
+     * @public
+     */
+    off(){
+        this.toggle(false);
+    }
 
-function setSwitchColor() {
-    if(this._el.checked){
-        this._switch.style.boxShadow = 'inset 0 0 0 ' +  this._switch.clientHeight/1.8  + 'px ' + this._options.onSwitchColor;
-        this._switch.style.border = '1px solid ' + this._options.onSwitchColor;
-        this._switch.style.transition = 'border 0.4s, box-shadow 0.4s, background-color 1.4s';
-        this._switch.style.backgroundColor = this._options.onSwitchColor;
-        this._jack.style.backgroundColor = this._options.onJackColor;
-    }else {
-        this._switch.style.boxShadow = 'inset 0 0 0 0  ' + this._options.offSwitchColor;
-        this._switch.style.border = '1px solid ' + SWITCH_BORDER_COLOR;
-        this._switch.style.transition = 'border 0.4s, box-shadow 0.4s';
-        this._switch.style.backgroundColor = this._options.offSwitchColor;
-        this._jack.style.backgroundColor = this._options.offJackColor;
+    /**
+     * See if the switch is disabled.
+     *
+     * @returns {boolean}
+     * @public
+     */
+    isDisabled() {
+        return this.options.disabled || this.element.disabled;
+    }
+
+    /**
+     * Toggle the disabled state.
+     *
+     * @param disabled
+     * @public
+     */
+    toggleDisabled(disabled) {
+        this.options.disabled = disabled;
+        this.element.disabled = disabled;
+        if (disabled) {
+            this.switcher.classList.add('switchery-disabled');
+        } else {
+            this.switcher.classList.remove('switchery-disabled');
+        }
+        this.switcher.setAttribute('aria-disabled', disabled);
+    }
+
+    /**
+     * Disable the switch.
+     * @public
+     */
+    disable(){
+        this.toggleDisabled(true);
+    }
+
+    /**
+     * Enable the switch.
+     */
+    enable(){
+        this.toggleDisabled(false);
+    }
+
+    destroy(){
+        if(this.switcher.parentNode){
+            this.switcher.parentNode.removeChild(this.switcher);
+        }
     }
 }
 
-function setSwitchDisabled(disabled) {
-    this._el.disabled = disabled;
-    classList(this._switch)[disabled? 'add' : 'remove']('switch-disabled');
-    this._switch.setAttribute('aria-disabled', disabled);
-}
-
-function setJackPosition() {
-    let offset = parseInt(window.getComputedStyle(this._switch).width) - parseInt(window.getComputedStyle(this._jack).width);
-    this._jack.style.left = this._el.checked ? offset+'px' : 0;
-}
-
-function setJackText() {
-    if(!this._options.showText)return;
-    this._jack.innerHTML = this._el.checked ? this._options.onText : this._options.offText;
-}
-
-function mergeOptions(a, b) {
-    if(!b)return a;
-    Object.keys(b).forEach(key => {
-        a[key] = b[key];
-    });
-    return a;
-}
-
-function bindEvents(events, sw) {
-    for(let[value, el] of events){
-        value = value.split(' ');
-
-        (function (event, func) {
-            el.addEventListener(event, switchEventsHandles[func])
-        })(value[0], value[1]);
-    }
-}
-
-function unbindEvents(events,sw) {
-    for(let[value, el] of events){
-        value = value.split(' ');
-        (function (event, func) {
-            console.log();
-            el.removeEventListener(event, switchEventsHandles[func]);
-        })(value[0], value[1]);
-    }
-}
-
-export default Switchery
+module.exports = Switchery;

@@ -1,0 +1,114 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"><meta name="keywords" content="switch,checkbox,iOS style"><meta name="description" content="A simple and powerful iOS style switch for checkbox."><title>Switcheryery</title><style>*{margin: 0;padding: 0;}
+        body{
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        button{
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            margin-left: 10px;
+            padding: 5px 10px;
+            background: #F15648;
+            border: none;
+            color: #fff;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:hover{
+            background: #f14744;
+        }
+        .github-link{
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #22b6d5;
+        }
+        .demo-content{
+            position: relative;
+            margin: 0 auto;
+            max-width: 1024px;
+            padding: 20px;
+        }
+        .demo-content .demo-box{
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #999;
+        }
+        .demo-content .demo-box .demo-box-title{
+            text-transform: capitalize;
+            font-size: 18px;
+            color: #22b6d5;
+        }
+        .hljs{
+            background-color: #fdf6e3 !important;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+            margin: 20px 0 20px 3px;
+            overflow: auto;
+        }</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/a11y-light.min.css" crossorigin="anonymous"/><script defer="defer" src="./switchery.min.js"></script><script defer="defer" src="./example.min.js"></script><link href="./switchery.min.css" rel="stylesheet"><link href="./example.min.css" rel="stylesheet"></head><body><div class="demo-content"><a class="github-link" href="https://github.com/slince/switchery.js">View on GitHub</a><div class="demo-box"><h4 class="demo-box-title">default</h4><div class="demo-box-content"><pre>
+                <code>
+                    var mySwitchery = new Switchery(el);
+                </code>
+            </pre><input type="checkbox" class="demo-default-1"/></div></div><div class="demo-box"><h4 class="demo-box-title">size</h4><div class="demo-box-content"><pre>
+                <code>
+                    var mySwitchery1 = new Switchery(el, {size: 'small'});
+                    var mySwitchery2 = new Switchery(el, {size: 'default'});
+                    var mySwitchery3 = new Switchery(el, {size: 'large'});
+                </code>
+            </pre><input type="checkbox" class="demo-size-1"/> <input type="checkbox" class="demo-size-2"/> <input type="checkbox" class="demo-size-3"/></div></div><div class="demo-box"><h4 class="demo-box-title">checked</h4><div class="demo-box-content"><pre>
+                <code>
+                    &lt;input type="checkbox" class="switch-primary" checked="checked"/&gt;
+
+                    var mySwitchery1 = new Switchery(el);
+                </code>
+            </pre><input type="checkbox" class="demo-checked-1" checked="checked"/></div></div><div class="demo-box"><h4 class="demo-box-title">text</h4><pre>
+            <code>
+                var mySwitchery = new Switchery(el, {
+                    showText: true,
+                    onText: 'O',
+                    offText: 'X'
+                });
+            </code>
+        </pre><input type="checkbox" class="demo-text-1"/></div><div class="demo-box"><h4 class="demo-box-title">color</h4><div class="demo-box-content"><pre>
+            <code>
+                var mySwitchery = new Switchery(el, {
+                    color    : '#34B363',
+                    secondaryColor   : '#D6B3A3',
+                    jackColor      : '#1453B3',
+                    jackSecondaryColor     : '#A4B363'
+                });
+            </code>
+        </pre><input type="checkbox" class="demo-color-1"/></div></div><div class="demo-box"><h4 class="demo-box-title">Predefined Classes</h4><div class="demo-box-content"><pre>
+                <code>
+                    &lt;input type="checkbox" class="switch-primary" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-success" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-danger" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-black" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-warning" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-info" /&gt;<br>
+                    &lt;input type="checkbox" class="switch-transparent" /&gt;<br>
+                </code>
+            </pre><input type="checkbox" class="switch-primary"/> <input type="checkbox" class="switch-success"/> <input type="checkbox" class="switch-danger"/> <input type="checkbox" class="switch-black"/> <input type="checkbox" class="switch-warning"/> <input type="checkbox" class="switch-info"/> <input type="checkbox" class="switch-transparent"/></div></div><div class="demo-box"><h4 class="demo-box-title">disabled</h4><div class="demo-box-content"><pre>
+                <code>
+                    var mySwitchery = new Switchery(el, {disabled: true});
+                </code>
+            </pre><input type="checkbox" class="demo-disabled-1"/></div></div><div class="demo-box"><h4 class="demo-box-title">API</h4><div class="demo-box-content"><pre>
+                <code>
+                    var mySwitchery = new Switchery(el);
+
+                    mySwitchery.on();
+                    mySwitchery.off();
+                    mySwitchery.toggle();
+                    mySwitchery.disable();
+                    mySwitchery.enable();
+                </code>
+            </pre><input type="checkbox" class="demo-api-1"/> <button onclick="switchHandle('demo-api-1','on')">ON</button> <button onclick="switchHandle('demo-api-1','off')">OFF</button> <button onclick="switchHandle('demo-api-1','toggle')">toggle</button> <button onclick="switchHandle('demo-api-1','disable')">disable</button> <button onclick="switchHandle('demo-api-1','enable')">enable</button></div></div><div class="demo-box"><h4 class="demo-box-title">destroy</h4><div class="demo-box-content"><pre>
+                <code>
+                    var mySwitchery = new Switchery(el);
+                    mySwitchery.destroy();
+                </code>
+            </pre><input type="checkbox" class="demo-destroy-1"/> <button onclick="switchHandle('demo-destroy-1','destroy')">destroy</button></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js" crossorigin="anonymous"></script><script>window.addEventListener('DOMContentLoaded', function () {
+    console.log('loaded');
+    hljs.highlightAll();
+})</script></body></html>
