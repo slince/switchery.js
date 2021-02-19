@@ -1,8 +1,6 @@
 # Switchery.js
 
-:rabbit: A simple and powerful iOS style switch for checkbox.
-
-[Live Preview](http://weatherstar.me/switch/)
+A simple and powerful iOS style switch for checkbox.
 
 ## Installation
 
