@@ -46,7 +46,7 @@ class Switchery{
         this.setPosition();
         this.handleChange();
         this.handleClick();
-        this.options.onInit(this);
+        this.options.onInit.call(this);
     }
 
     /**
@@ -235,9 +235,9 @@ class Switchery{
      * @public
      */
     toggle(checked){
-        this.options.beforeChange(this, this.element.checked);
+        this.options.beforeChange.call(this, this.element.checked);
         this.element.checked = checked === undefined ? !this.element.checked : checked;
-        this.options.onChange(this, this.element.checked);
+        this.options.onChange.call(this, this.element.checked);
         const classList = this.switcher.classList;
         if (this.element.checked) {
             classList.add('switchery-on');
