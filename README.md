@@ -44,8 +44,6 @@ const switchery = new Switchery(el, options);
 ```js
 defaults = {
     size: 'default',
-    onText: 'Y',
-    offText: 'N',
     color: '#64BD63',
     secondaryColor: '#dfdfdf',
     jackColor: '#fff',
