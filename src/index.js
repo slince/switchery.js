@@ -1,3 +1,4 @@
-import Switch from './switch'
+import './switchery.scss';
+import Switchery from './switchery2'
 
-export default Switch;
+export default Switchery;

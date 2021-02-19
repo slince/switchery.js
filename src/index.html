@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="keywords" content="switch,checkbox,iOS style">
     <meta name="description" content="A simple and powerful iOS style switch for checkbox.">
-    <title>Switch</title>
-    <link rel="stylesheet" href="demo/default.css">
-    <link rel="stylesheet" href="dist/switch.css">
+    <title>Switchery</title>
     <style>
         *{margin: 0;padding: 0;}
         body{
@@ -212,8 +210,7 @@
         </div>
     </div>
 </div>
-<script src="demo/highlight.pack.js"></script>
-<script src="dist/switch.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js" crossorigin="anonymous"></script>
 <script>
     var switches = {};
     var switchConfig = {
@@ -296,14 +293,13 @@
     };
 
     Object.keys(switchConfig).forEach(function (key) {
-        switches[key] = new Switch(document.querySelector('.' + key),switchConfig[key]);
+        switches[key] = new Switchery(document.querySelector('.' + key),switchConfig[key]);
     });
 
     function switchHandle(key, event) {
         switches[key][event]();
     }
     hljs.initHighlightingOnLoad();
-
 </script>
 </body>
 </html>

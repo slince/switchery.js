@@ -1,7 +1,4 @@
-require('./switch.less');
-let fastclick = require('fastclick');
-
-let classList = require('classlist');
+import fastclick from 'fastclick';
 
 let legalSize = ['default','large','small'];
 
@@ -26,7 +23,7 @@ const SWITCH_BORDER_COLOR = '#dfdfdf';
 const SWITCH_ON_CLASS = 'switch-on';
 const SWITCH_OFF_CLASS = 'switch-off';
 
-function Switch (el, options) {
+function Switchery (el, options) {
     this._init(el, options)
 }
 
@@ -36,10 +33,10 @@ function Switch (el, options) {
  *
  * @param el
  * @param options
- * @returns {Switch}
+ * @returns {Switchery}
  * @private
  */
-Switch.prototype._init = function (el, options) {
+Switchery.prototype._init = function (el, options) {
 
     let defaultOptions = {
         size: 'default',
@@ -63,7 +60,7 @@ Switch.prototype._init = function (el, options) {
     
     if(!el || el.nodeType !== 1 || el.type !== 'checkbox') return;
     if(el._switch)return el._switch;
-    if(!this instanceof Switch) return new Switch(el, options);
+    if(!this instanceof Switchery) return new Switchery(el, options);
 
     this._el = el;
     this._el._switch = this;
@@ -79,7 +76,7 @@ Switch.prototype._init = function (el, options) {
  *
  * @private
  */
-Switch.prototype._initElement = function () {
+Switchery.prototype._initElement = function () {
     this._el.style.display = 'none';
 
     if(this._options.checked !== undefined){
@@ -99,7 +96,7 @@ Switch.prototype._initElement = function () {
  *
  * @private
  */
-Switch.prototype._createSwitch = function (){
+Switchery.prototype._createSwitch = function (){
     this._switch = document.createElement('span');
     this._jack = document.createElement('small');
     this._switch.appendChild(this._jack);
@@ -108,7 +105,7 @@ Switch.prototype._createSwitch = function (){
 };
 
 
-Switch.prototype._initEvents = function () {
+Switchery.prototype._initEvents = function () {
     this._events =  new Map([
         ['change changeSwitchStateFromCheckbox', this._el],
         ['click changeSwitchStateFromSwitch', this._switch],
@@ -122,7 +119,7 @@ Switch.prototype._initEvents = function () {
  * @param checked
  * @private
  */
-Switch.prototype._toggle = function (checked) {
+Switchery.prototype._toggle = function (checked) {
     this._options.beforeChange.call(this, this._el.checked);
     this._el.checked = checked === undefined ? !this._el.checked : checked;
     this._options.onChange.call(this, this._el.checked);
@@ -143,7 +140,7 @@ Switch.prototype._toggle = function (checked) {
  *
  * @public
  */
-Switch.prototype.getChecked = function () {
+Switchery.prototype.getChecked = function () {
     return this._el.checked;
 };
 
@@ -151,7 +148,7 @@ Switch.prototype.getChecked = function () {
  *
  * @public
  */
-Switch.prototype.on = function () {
+Switchery.prototype.on = function () {
     this._toggle(true);
 };
 
@@ -159,7 +156,7 @@ Switch.prototype.on = function () {
  *
  * @public
  */
-Switch.prototype.off = function () {
+Switchery.prototype.off = function () {
     this._toggle(false);
 };
 
@@ -167,7 +164,7 @@ Switch.prototype.off = function () {
  *
  * @public
  */
-Switch.prototype.toggle = function () {
+Switchery.prototype.toggle = function () {
     this._toggle();
 };
 
@@ -175,7 +172,7 @@ Switch.prototype.toggle = function () {
  *
  *@public
  */
-Switch.prototype.disable = function () {
+Switchery.prototype.disable = function () {
     setSwitchDisabled.call(this, this._options.disabled = true);
 };
 
@@ -183,7 +180,7 @@ Switch.prototype.disable = function () {
  *
  *@public
  */
-Switch.prototype.enable = function () {
+Switchery.prototype.enable = function () {
     setSwitchDisabled.call(this, this._options.disabled = false);
 };
 
@@ -192,7 +189,7 @@ Switch.prototype.enable = function () {
  *
  * @public
  */
-Switch.prototype.destroy = function () {
+Switchery.prototype.destroy = function () {
     this._options.beforeDestroy.call(this, this._el.checked);
     unbindEvents(this._events,this);
     this._options.onDestroy.call(this);
@@ -203,7 +200,7 @@ Switch.prototype.destroy = function () {
  *
  * @public
  */
-Switch.prototype.remove = function () {
+Switchery.prototype.remove = function () {
     this._options.beforeRemove.call(this, this._el.checked);
     try {
         this._el.setAttribute('style',this._el.getAttribute('style').replace(/\s*display:\s*none;/g,''));
@@ -301,4 +298,4 @@ function unbindEvents(events,sw) {
     }
 }
 
-export default Switch
+export default Switchery

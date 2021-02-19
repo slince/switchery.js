@@ -32,7 +32,7 @@ standalone version
 
 ````javascript
 var el = document.querySelector('.checkbox-switch');
-var mySwitch = new Switch(el, options);
+var mySwitch = new Switchery(el, options);
 ````
 
 work with module bundle
