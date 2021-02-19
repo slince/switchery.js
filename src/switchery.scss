@@ -1,15 +1,18 @@
 @primaryColor: #64BD63;
 
 .switchery{
+  background-color: #fff;
+  border: 1px solid #dfdfdf;
+  border-radius: 20px;
+  cursor: pointer;
   display: inline-block;
   vertical-align: middle;
   position: relative;
-  cursor: pointer;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   user-select: none;
   box-sizing: content-box;
-  -webkit-tap-highlight-color: transparent;
   outline: none;
+  height: 30px;
+  width: 50px;
   small{
     font-size: 12px;
     position: relative;

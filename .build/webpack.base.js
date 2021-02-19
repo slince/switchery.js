@@ -1,31 +1,28 @@
 const path = require('path');
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const devMode = process.env.NODE_ENV === 'development';
 
 const basePath = path.resolve(__dirname, "../");
 
 const config = {
     mode: process.env.NODE_ENV,
     entry: {
-        'switchery.min': basePath + '/src/index.js'
+        'switchery': basePath + '/src/index.js',
+        'example': basePath + '/example/example.js'
     },
     output: {
-        filename: '[name].js',
+        filename: '[name].min.js',
         path: basePath + '/dist',
-        library: 'Switchery',
-        libraryTarget: 'umd'
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: basePath + '/src/index.html',
-            filename: basePath + '/dist/index.html',
+            template: basePath + '/example/index.html',
+            filename: basePath + '/dist/index.html'
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].css',
-            chunkFilename: '[id].css'
+            filename: '[name].min.css',
+            chunkFilename: '[id].min.css'
         }),
         new CleanWebpackPlugin({
             dry: false,
