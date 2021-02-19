@@ -72,7 +72,7 @@ defaults = {
 
 ##### .isChecked()
 
-Get switch element checked status.
+See if input is checked.
 
 ##### .on()
 
